@@ -6,15 +6,20 @@ type PairBool {
 
 // Returns the first element of a pair
 fst(pair: PairBool): Bool
-  ?f
+  open pair
+    pair.fst
 
 // Returns the second element of a pair
 snd(pair: PairBool): Bool
-  ?s
+  open pair
+  pair.snd
 
 // Returns true if both elements of a PairBool are identical
 eql_elements(pair: PairBool): Bool 
-  ?l
+  case pair {
+    new: 
+  }
+
   
 // Returns true if both Pairs are equal 
 // eql(PairBool.new(false, false), PairBool.new(true, true)) -> false 

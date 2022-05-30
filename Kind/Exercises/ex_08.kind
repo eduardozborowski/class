@@ -7,15 +7,24 @@ type List <A: Type> {
 
 // Returns the head of the List
 head<A: Type>(xs: List<A>): Maybe<A>
-  ?head
+  case xs {
+  nil: none
+  cons: some(xs.head)
+}
 
 // Returns the list without the first element
 tail<A: Type>(xs: List<A>): List<A>
-  ?a
+  case xs {
+  nil: List.nil!
+  cons: xs.tail
+}
 
 // Returns the length of a list
 length<A: Type>(xs: List<A>): Nat
-  ?a
+  case xs { 
+  nil: Nat.zero
+  cons: Nat.succ(lenght<A>(xs.tail))
+}
 
 // Returns the last element of a list
 last<A: Type>(xs: List<A>): Maybe<A>
@@ -27,7 +36,10 @@ init<A: Type>(xs: List<A>): List<A>
 
 // Concatenates two lists
 concat<A: Type>(xs: List<A>, ys: List<A>): List<A>
-  ?a
+  case xs{
+  cons: List.cons!(xs.head, concat<A>(xs.tail, ys))
+  nil: ys
+}
 
 // Removes n elements from the start of the list
 // List.drop<Nat>(3, [1,2,3,4,5]) -> [4, 5]
@@ -41,11 +53,19 @@ take<A: Type>(n: Nat, xs: List<A>): List<A>
 
 // Applies a function to all elements of a list
 map<A: Type, B: Type>(fn: A -> B, xs: List<A>): List<B>
-  ?a
+    case xs {
+    nil: List.nil!
+    cons: List.cons!(fn(xs.head), map!!(fn, xs.tail))
+  }
 
 // Returns the same list, with the order reversed
 reverse<A: Type>(xs: List<A>): List<A>
   reverse.go<A>(List.nil<A>, xs)
-
+  
+reverse.go<A: Type>(ys: List<A>, xs: List<A>): List<A>
+  case xs{
+   nil: ys
+   cons: reverse.go!(List.cons!(xs.head, ys), xs.tail)
+  }
 reverse.go<A: Type>(new_list: List<A>, old_list: List<A>): List<A>
   ?r

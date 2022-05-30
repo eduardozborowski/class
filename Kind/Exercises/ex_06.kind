@@ -98,7 +98,11 @@ int(sign: Bool, num: Nat): Inte
 // int(false, 2)     = -1
 // int(true,  2)     = +3
 inc(a: Inte): Inte  
-  ?inc
+  inc(a: Inte): Inte  
+  case a {
+    pos: Inte.pos(Pos.succ(a.num))
+    neg: Inte.neg(Neg.pred(a.num))
+  }
 
 // Decrements an Integer
 // int(false, 1) = -2
