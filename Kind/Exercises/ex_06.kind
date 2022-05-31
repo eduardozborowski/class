@@ -55,6 +55,13 @@ pos_to_nat(n: Pos): Nat
     succ:  Nat.succ(pos_to_nat(n.pred))
   }
 
+// Converts Int to nat
+inte_to_nat(n: Inte): Nat
+  case n {
+    neg: neg_to_nat(n.num)
+    pos: pos_to_nat(n.num)
+  }
+
 // Converts Nat to Pos
 nat_to_pos(n: Nat): Pos
   case n { 
@@ -125,12 +132,12 @@ dec(a: Inte): Inte
 dbl(a: Inte): Inte 
   case a {
     pos: case a.num {
-      succ: Inte.pos(Pos.succ(Pos.succ(dbl(Inte.pos(a.num.pred)))))
+      succ: inc(inc(dbl(dec(a))))
       zero: Inte.pos(Pos.zero)
     }
     neg: case a.num {
       one: Inte.neg(Neg.pred(a.num))
-      pred: Inte.neg(Neg.pred(Neg.pred(dbl(Inte.neg(a.num.succ)))))
+      pred: dec(dec(dbl(inc(a))))
     }
    }
 
@@ -138,23 +145,69 @@ dbl(a: Inte): Inte
 // int(false, 4) + int(false, 2) = -6
 // int(false, 4) + int(true,  2) = -2
 add(a: Inte, b: Inte): Inte
-  ?add
+  case a {
+    pos: case a.num {
+      succ: add(dec(a), inc(b))
+      zero: b
+    }
+    neg: case a.num {
+      one: dec(b)
+      pred: add(inc(a), dec(b))
+    }
+  }
 
 // Multiplies two Integers
 // int(false, 2) * int(true, 3)  = -6
 // int(false, 4) * int(false, 5) = +20
 mul(a: Inte, b: Inte): Inte
-  ?mul
+  case a b {
+    pos _: case a.num {
+      succ: add(b, mul(dec(a),b))
+      zero: Inte.pos(Pos.zero)
+    }
+    neg neg: case a.num {
+      one: int(true, neg_to_nat(b.num))
+      pred: add(mul(Inte.neg(Neg.one), b), mul(inc(a),b))
+    }
+    neg pos: case a.num {
+      one: int(false, pos_to_nat(b.num))
+      pred: add(mul(Inte.neg(Neg.one), b), mul(inc(a),b))
+    }
+  }
 
 // Subtracts two Integers
 // int(false, 6) - int(false, 6) = +0
 // int(false, 4) - int(false, 6) = +2
 sub(a: Inte, b: Inte): Inte
-  ?sub
-
-// Equal
-eql(a: Inte, b: Inte): Bool // Given two Integers, returns true if both are the same and false otherwise.
-  ?eql
+  case a b {
+    pos pos: case a.num b.num {
+      succ zero: a
+      zero succ: int(false, inte_to_nat(b))
+      succ succ: sub(dec(a), dec(b))
+    } default Inte.pos(Pos.zero)
+    neg neg: case a.num b.num {
+      pred one: a
+      one pred: b
+      pred pred: add(a, int(true, inte_to_nat(b)))
+    } default Inte.neg(Neg.one)
+    pos neg: case a.num b.num {
+      zero one: int(true, inte_to_nat(b))
+      zero pred: int(true, inte_to_nat(b))
+      succ one: inc(a)
+      succ pred: add(a, int(true, inte_to_nat(b)))
+    }
+    neg pos: case a.num b.num {
+      one zero: a
+      pred zero: a
+      one succ: add(a,b)
+      pred succ: add(int(false, inte_to_nat(a)), int(false, inte_to_nat(b)))
+    }
+  } default Inte.pos(Pos.zero)
+// Equal // Given two Integers, returns true if both are the same and false otherwise.
+eql(a: Inte, b: Inte): Bool 
+  case a b {
+    
+ }
 
 
 // Greater than
@@ -204,10 +257,10 @@ ex_06: IO<Unit>
     Tests._06.inc(inc)
     Tests._06.dec(dec)
     Tests._06.dbl(dbl)
-    // Tests._06.add(add)
-    // Tests._06.mul(mul)
-    // Tests._06.sub(sub)
-    // Tests._06.eql(eql)
+    Tests._06.add(add)
+    Tests._06.mul(mul)
+    Tests._06.sub(sub)
+   // Tests._06.eql(eql)
     // Tests._06.gtn(gtn)
     // Tests._06.ltn(ltn)
     // Tests._06.min(min)
