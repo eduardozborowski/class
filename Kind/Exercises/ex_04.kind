@@ -7,23 +7,23 @@ type Nat {
 
 // Doubles a number
 dbl(a: Nat): Nat // double
-    case n {
+    case a {
         zero: Nat.zero
-        succ: Nat.succ(Nat.succ(dbl(n.pred)))
+        succ: Nat.succ(Nat.succ(dbl(a.pred)))
     }
 
 // Addition
 add(a: Nat, b: Nat): Nat
   case a {
     zero: b 
-    succ: Problems.p9(a.pred, Nat.succ(b))
+    succ: add(a.pred, Nat.succ(b))
 }
 
 // Multiplication
 mul(a: Nat, b: Nat): Nat
   case a {
     zero: Nat.zero
-    succ: add(b, Problems.p11(a.pred,b))
+    succ: add(b, mul(a.pred,b))
  }
 
 // Subtraction
@@ -38,8 +38,10 @@ sub(a: Nat, b: Nat): Nat
 // Factorial
 // 4! = 24
 fac(a: Nat): Nat 
-  
-  ?f
+  case a {
+    zero: Nat.succ(a)
+    succ: mul(fac(a.pred),a)
+  }
 
 // Equal
 eql(a: Nat, b: Nat): Bool // Given 2 numbers, it returns true if the 2 are the same and false if they are different.
@@ -72,13 +74,21 @@ ltn(a: Nat, b: Nat): Bool // if A > B == False else true
 // min(2, 3) = 2
 // min(4, 1) = 1
 min(a: Nat, b: Nat): Nat // if A < B then A else B
-  
+  case a b {
+    zero succ: a
+    succ zero: b
+    succ succ: Nat.succ(min(a.pred, b.pred))
+  }default Nat.zero
 
 // Maximum
 // max(2, 3) = 3
 // max(4, 1) = 4
 max(a: Nat, b: Nat): Nat // if A > B then A else B
-  
+  case a b {
+    zero succ: b
+    succ zero: a
+    succ succ: Nat.succ(max(a.pred, b.pred))
+  }default Nat.zero
 
 
 // Divides a number by two
@@ -86,11 +96,11 @@ max(a: Nat, b: Nat): Nat // if A > B then A else B
 // 5 / 2 = 2
 // 1 / 2 = 0
 hlf(a: Nat): Nat
-  case n {
+  case a {
       zero: Nat.zero
-      succ: case n.pred {
+      succ: case a.pred {
         zero: Nat.zero
-        succ: Nat.succ(hlf(n.pred.pred))
+        succ: Nat.succ(hlf(a.pred.pred))
     }
 }
 

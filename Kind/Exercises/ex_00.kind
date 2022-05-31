@@ -10,16 +10,16 @@ type Bool {
 is_true(a: Bool): Bool
     case a {
     true: true
-    false: b
+    false: a
  }
 
 
 // Is false
 // Returns true if input is false
 is_false(a: Bool): Bool
-  case b {
-  true: true
-  false: false
+  case a {
+  true: false
+  false: true
 }
 
 // Negation
@@ -41,9 +41,8 @@ and(a: Bool, b: Bool): Bool
 // Returs true if any input is true
 or(a: Bool, b: Bool): Bool
   case a b {
-    true false: true
-    false true: true
-  } default false
+    false false: false
+  } default true
 
 // Equal
 // Returs true if both inputs are identical
@@ -66,7 +65,7 @@ xor(a: Bool, b: Bool): Bool
 nor(a: Bool, b: Bool): Bool
   case a b {
     false false: true
-  } default true
+  } default false
 
 // Nand
 // Returns false only if both inputs are true

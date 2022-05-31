@@ -13,7 +13,7 @@ swap<A: Type, B: Type>(pair: Pair<A,B>): Pair<B,A>
 // Returns the first element of a pair
 first<A: Type, B: Type>(pair: Pair<A,B>): A
   case pair {
-    new: pair.snd
+    new: pair.fst
     }
 
 // Returns the second element of a pair
