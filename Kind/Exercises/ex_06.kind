@@ -206,9 +206,15 @@ sub(a: Inte, b: Inte): Inte
 // Equal // Given two Integers, returns true if both are the same and false otherwise.
 eql(a: Inte, b: Inte): Bool 
   case a b {
-    
- }
-
+    pos pos: case a.num b.num {
+      zero zero: true
+      succ succ: eql(dec(a), dec(b))
+    } default false
+    neg neg: case a.num b.num {
+      one one: true
+      pred pred: eql(inc(a), inc(b))
+    } default false
+ } default false
 
 // Greater than
 // int(false, 2) > int(false, 5) = True
@@ -216,25 +222,69 @@ eql(a: Inte, b: Inte): Bool
 // int(false, 2) > int(true,  0) = False
 // int(true,  0) > int(false, 2) = True
 gtn(a: Inte, b: Inte): Bool // if A > B then True else false
-  ?gtn
+  case a b {
+    pos pos: case a.num b.num {
+      succ zero: true
+      succ succ: gtn(dec(a), dec(b))
+    } default false
+    neg neg: case a.num b.num {
+      one pred: true
+      pred pred: gtn(inc(a), inc(b))
+  } default false
+    pos neg: true
+  } default false
 
 // Lower than
 // int(false, 1) < int(true,  0) = True
 // int(true,  0) < int(false, 1) = False
 ltn(a: Inte, b: Inte): Bool // if A > B then False else true
-  ?ltn
+    case a b {
+    pos pos: case a.num b.num {
+      succ zero: false
+      succ succ: gtn(dec(a), dec(b))
+    } default true
+    neg neg: case a.num b.num {
+      one pred: false
+      pred pred: gtn(inc(a), inc(b))
+  } default true
+    pos neg: false
+  } default true
 
 // Minimum
 // min(int(false, 1), int(true,  0)  = -1
 // min(int(false, 1), int(false, 3)) = -3
 min(a: Inte, b: Inte): Inte // if A < B then A else B
-  ?min
+  case a b {
+    neg pos: a
+    pos neg: b
+    neg neg: case a.num b.num {
+      one pred: b
+      pred one: a
+      pred pred: dec(min(inc(a), inc(b)))
+    } default Inte.neg(Neg.one)
+    pos pos: case a.num b.num {
+      succ succ: inc(min(dec(a), dec(b)))
+    } default Inte.pos(Pos.zero)
+  } default Inte.pos(Pos.zero)
 
 // Maximum
 // max(int(false, 1), int(true,  0)) = +0
 // max(int(false, 1), int(false, 3)) = -1
 max(a: Inte, b: Inte): Inte // if A > B then A else B
-  ?max
+    case a b {
+    neg pos: b
+    pos neg: a
+    neg neg: case a.num b.num {
+      one pred: a
+      pred one: b
+      pred pred: dec(max(inc(a), inc(b)))
+    } default Inte.neg(Neg.one)
+    pos pos: case a.num b.num {
+      succ zero: a
+      zero succ: b
+      succ succ: inc(max(dec(a), dec(b)))
+    } default Inte.pos(Pos.zero)
+  } default Inte.pos(Pos.zero)
 
 // Half
 // Divides an Integer by two
@@ -260,11 +310,11 @@ ex_06: IO<Unit>
     Tests._06.add(add)
     Tests._06.mul(mul)
     Tests._06.sub(sub)
-   // Tests._06.eql(eql)
-    // Tests._06.gtn(gtn)
-    // Tests._06.ltn(ltn)
-    // Tests._06.min(min)
-    // Tests._06.max(max)
-    // Tests._06.hlf(hlf)
+    Tests._06.eql(eql)
+    Tests._06.gtn(gtn)
+    Tests._06.ltn(ltn)
+    Tests._06.min(min)
+    Tests._06.max(max)
+    Tests._06.hlf(hlf)
     // Tests._06.div(div)
   }
