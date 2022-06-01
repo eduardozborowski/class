@@ -109,9 +109,9 @@ hlf(a: Nat): Nat
 // x / 0 = 0
 // 5 / 2 = 2
 div(a: Nat, b: Nat): Nat // division
-  case a {
+  case b {
     zero: Nat.zero
-    succ: case a.pred {
+    succ: case sub(Nat.succ(a), b) {
       zero: Nat.zero
       succ: Nat.succ(div(sub(a,b),b))
   }
@@ -119,7 +119,7 @@ div(a: Nat, b: Nat): Nat // division
 
 
 ex_04: IO<Unit>
-  IO {
+     IO {
     Tests._04.dbl(dbl)
     Tests._04.add(add)
     Tests._04.mul(mul)

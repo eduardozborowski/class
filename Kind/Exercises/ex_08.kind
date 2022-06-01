@@ -23,16 +23,28 @@ tail<A: Type>(xs: List<A>): List<A>
 length<A: Type>(xs: List<A>): Nat
   case xs { 
   nil: Nat.zero
-  cons: Nat.succ(lenght<A>(xs.tail))
+  cons: Nat.succ(length<A>(xs.tail))
 }
 
 // Returns the last element of a list
 last<A: Type>(xs: List<A>): Maybe<A>
-  ?last
+  case xs {
+    nil: Maybe.none<A>
+    cons: case xs.tail {
+      nil: Maybe.some<A>(xs.head)
+      cons: last<A>(xs.tail)
+    }
+  }
 
 // Returns the list without the last element
 init<A: Type>(xs: List<A>): List<A>
-  ?init
+  case xs {
+    nil: List.nil<A>
+    cons: case xs.tail {
+      nil: List.nil<A>
+      cons: List.cons!(xs.head, init<A>(xs.tail))
+    }
+  }
 
 // Concatenates two lists
 concat<A: Type>(xs: List<A>, ys: List<A>): List<A>

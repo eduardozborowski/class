@@ -292,15 +292,50 @@ max(a: Inte, b: Inte): Inte // if A > B then A else B
 // int(false, 1) = +0
 // int(true,  6) = +3
 hlf(a: Inte): Inte
-  ?hlf
+  case a {
+    pos: case a.num {
+        zero: Inte.pos(Pos.zero)
+        succ: case a.num.pred {
+          zero: Inte.pos(Pos.zero)
+          succ: inc(hlf(dec(dec(a))))
+        }
+    }
+    neg: case a.num {
+      one: Inte.pos(Pos.zero)
+      pred: case a.num.succ {
+        one: Inte.neg(Neg.one)
+        pred: dec(hlf(inc(inc(a))))
+      }
+    }
+  }
 
 // Division
 // int(true,  2)  / int(true,  2)  = +1
 // int(false, 8)  / int(true,  4)  = -2
 // int(false, 11) / int(false, 5)  = +2
 // int(true,  10) / int(false, 12) = +0
+// def ℤ.divide : ℤ → ℤ → ℤ
+//   | ℤ.pos m, ℤ.pos n => ℤ.pos (ℕ.divide m n)
+//   | ℤ.pos m, ℤ.neg n => ℤ.neg (ℕ.toNz (ℕ.divide m (ℕz.toNat n)))
+//   | ℤ.neg m, ℤ.pos n => ℤ.neg (ℕ.toNz (ℕ.divide (ℕz.toNat m) n))
+//   | ℤ.neg m, ℤ.neg n => ℤ.pos (ℕ.divide (ℕz.toNat m) (ℕz.toNat n))
 div(a: Inte, b: Inte): Inte 
-  ?div
+  let x = inte_to_nat(a)
+  let y = inte_to_nat(b)
+  case a b {
+    pos pos: case a.num b.num {
+      succ succ: int(true, Nat.div(x,y))
+    }default Inte.pos(Pos.zero)
+    pos neg: case a.num {
+      zero: Inte.pos(Pos.zero)
+      succ: int(false, Nat.div(x,y))
+    }
+    neg pos: case b.num {
+      zero: Inte.pos(Pos.zero)
+      succ: int(false, Nat.div(x,y))
+    }
+    neg neg: int(true, Nat.div(x,y))
+  }
 
 ex_06: IO<Unit>
   IO {
@@ -316,5 +351,5 @@ ex_06: IO<Unit>
     Tests._06.min(min)
     Tests._06.max(max)
     Tests._06.hlf(hlf)
-    // Tests._06.div(div)
+    Tests._06.div(div)
   }
